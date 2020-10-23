@@ -40,4 +40,10 @@ echo Pacstrapping system
 reflector -n 50 > /etc/pacman.d/mirrorlist
 yes '' | pacstrap /mnt base base-devel linux linux-firmware
 
+echo Generating fstab
+genfstab -U /mnt >> /mnt/etc/fstab
+
+echo Starting system install in chroot
+cp post-pacstrap.sh /mnt/root/
+arch-chroot /mnt bash post-pacstrap.sh
 echo Done
