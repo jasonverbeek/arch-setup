@@ -22,11 +22,11 @@ if [ "${IS_UEFI}" -eq "2" ]; then
 else
     echo Setting up for EFI
     echo Creating EFI partition
-    parted -s /dev/sda mkpart "EFI_Partition" fat32 1Mib 261Mib 1> /dev/null
+    parted -s /dev/sda mkpart primary fat32 1Mib 261Mib 1> /dev/null
     parted -s /dev/sda set 1 esp on 1> /dev/null
     mkfs.fat -F32 /dev/sda1 1> /dev/null
     echo Creating root partition
-    parted -s /dev/sda mkpart "Arch_Drive" ext4 261Mib 100% 1> /dev/null
+    parted -s /dev/sda mkpart primary ext4 261Mib 100% 1> /dev/null
     mkfs.ext4 /dev/sda2 1> /dev/null
     echo Mounting root partition
     mount /dev/sda2 /mnt
