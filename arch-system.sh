@@ -10,7 +10,7 @@ ls /sys/firmware/efi/efivars &>/dev/null
 IS_UEFI=$?
 
 echo Destroying /dev/sda
-sgdisk --zap-all /dev/sda
+wipefs -a /dev/sda
 if [ "${IS_UEFI}" -eq "2" ]; then
     echo Setting up for i386
     echo Creating root partition
