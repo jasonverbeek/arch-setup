@@ -9,12 +9,12 @@ echo Checking EFI
 ls /sys/firmware/efi/efivars &>/dev/null
 IS_UEFI=$?
 
-
-
+echo Destroying /dev/sda
+sgdisk --zap-all /dev/sda
 if [ "${IS_UEFI}" -eq "2" ]; then
     echo Setting up for i386
     echo Creating root partition
-    parted -s /dev/sda mkpart primary ext4 0% 100% 1> /dev/null
+    parted -s /dev/sda mklabel gpt mkpart primary ext4 0% 100% 1> /dev/null
     parted -s /dev/sda set 1 boot on 1> /dev/null
     mkfs.ext4 /dev/sda1 1> /dev/null
     echo Mounting root partition
@@ -22,11 +22,11 @@ if [ "${IS_UEFI}" -eq "2" ]; then
 else
     echo Setting up for EFI
     echo Creating EFI partition
-    parted -s /dev/sda mkpart primary fat32 1Mib 261Mib 1> /dev/null
+    parted -s /dev/sda mklabel gpt mkpart primary fat32 1Mib 261Mib 1> /dev/null
     parted -s /dev/sda set 1 esp on 1> /dev/null
     mkfs.fat -F32 /dev/sda1 1> /dev/null
     echo Creating root partition
-    parted -s /dev/sda mkpart primary ext4 261Mib 100% 1> /dev/null
+    parted -s /dev/sda mklabel gpt mkpart primary ext4 261Mib 100% 1> /dev/null
     mkfs.ext4 /dev/sda2 1> /dev/null
     echo Mounting root partition
     mount /dev/sda2 /mnt
@@ -38,6 +38,6 @@ fi
 
 echo Pacstrapping system
 reflector -n 50 > /etc/pacman.d/mirrorlist
-pacstrap /mnt base base-devel linux linux-firmware 1> /dev/null
+yes '' | pacstrap /mnt base base-devel linux linux-firmware
 
 echo Done
