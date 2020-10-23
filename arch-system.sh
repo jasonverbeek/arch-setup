@@ -14,7 +14,7 @@ IS_UEFI=$?
 if [ "${IS_UEFI}" -eq "2" ]; then
     echo Setting up for i386
     echo Creating root partition
-    parted -s /dev/sda mkpart "Arch_Drive" ext4 0% 100% 1> /dev/null
+    parted -s /dev/sda mkpart primary ext4 0% 100% 1> /dev/null
     parted -s /dev/sda set 1 boot on 1> /dev/null
     mkfs.ext4 /dev/sda1 1> /dev/null
     echo Mounting root partition
