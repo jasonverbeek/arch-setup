@@ -57,7 +57,7 @@ yes '' | sudo -u jason makepkg -si
 cd -
 rm -rf /home/jason/yay
 
-yes '1' | sudo -u jason yay vi-vim-symlink
+yes '1' | sudo -u jason yay --noconfirm vi-vim-symlink
 
 sudo -u jason mkdir -p ~/.config/qtile
 sudo -u jason cp /usr/share/doc/qtile/default_config.py ~/.config/qtile/config.py
