@@ -40,7 +40,7 @@ fi
 grub-mkconfig -o /boot/grub/grub.cfg
 
 echo Enabling DHCPCD
-systemctl enable enp0s3@dhcpcd #TODO: automatically get interface
+systemctl enable dhcpcd@enp0s3 #TODO: automatically get interface
 
 useradd -m jason # TODO change vor variable in main script
 echo "jason ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers #TODO
