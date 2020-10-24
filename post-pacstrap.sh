@@ -63,4 +63,5 @@ sudo -u jason mkdir -p /home/jason/.config/qtile
 sudo -u jason cp /usr/share/doc/qtile/default_config.py /home/jason/.config/qtile/config.py
 
 chown jason:jason /home/jason/.config/qtile/config.py
+systemctl enable lightdm
 
