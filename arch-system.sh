@@ -37,7 +37,7 @@ fi
 
 
 echo Pacstrapping system
-reflector -n 50 > /etc/pacman.d/mirrorlist
+reflector --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
 # yes '' | pacstrap /mnt base base-devel linux linux-firmware
 yes '' | pacstrap /mnt base linux linux-firmware
 
