@@ -38,3 +38,29 @@ else
     grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
 fi
 grub-mkconfig -o /boot/grub/grub.cfg
+
+echo Enabling DHCPCD
+systemctl enable enp0s3@dhcpcd #TODO: automatically get interface
+
+useradd -m jason # TODO change vor variable in main script
+echo "jason ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers #TODO
+
+VM=1
+if [ "${VM}" -eq "1" ]; then
+    pacman -Syyu --noconfirm virtualbox-guest-utils
+fi
+cd /home/jason/
+sudo -u jason git clone https://aur.archlinux.org/yay.git
+cd -
+cd /home/jason/yay
+yes '' | sudo -u jason makepkg -si
+cd -
+rm -rf /home/jason/yay
+
+yes '1' | sudo -u jason yay vi-vim-symlink
+
+sudo -u jason mkdir -p ~/.config/qtile
+sudo -u jason cp /usr/share/doc/qtile/default_config.py ~/.config/qtile/config.py
+
+chown jason:jason ~/.config/qtile/config.py
+

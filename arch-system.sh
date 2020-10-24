@@ -38,8 +38,16 @@ fi
 
 echo Pacstrapping system
 reflector --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
-# yes '' | pacstrap /mnt base base-devel linux linux-firmware
-yes '' | pacstrap /mnt base linux linux-firmware grub git vim efibootmgr
+yes '' | pacstrap /mnt base base-devel linux linux-firmware \
+    grub \
+    git \
+    vim \
+    efibootmgr \
+    sudo \
+    xorg-server \
+    lightdm \
+    lightdm-gtk-greeter \
+    dhcpcd
 
 echo Generating fstab
 genfstab -U /mnt >> /mnt/etc/fstab
