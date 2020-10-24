@@ -23,12 +23,6 @@ echo -e "::1\tlocalhost\r\n" >> /etc/hosts
 echo -e "127.0.1.1\tarch.localdomain arch" >> /etc/hosts
 
 
-echo
-echo
-echo "Setting password for root"
-passwd
-
-
 echo "Installing GRUB bootloader"
 if [ "${IS_UEFI}" -eq "2" ]; then
     echo "GRUB for i386-pc"
@@ -44,8 +38,13 @@ systemctl enable dhcpcd@enp0s3 #TODO: automatically get interface
 
 useradd -m jason # TODO change vor variable in main script
 echo "jason ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers #TODO
+echo
+echo Choose root password
+passwd
+echo Choose new user password
+passwd jason # TODO
 
-VM=1
+VM=${VM:=1}
 if [ "${VM}" -eq "1" ]; then
     pacman -Syyu --noconfirm virtualbox-guest-utils
 fi
