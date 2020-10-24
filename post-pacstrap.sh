@@ -35,6 +35,6 @@ if [ "${IS_UEFI}" -eq "2" ]; then
     grub-install --target=i386-pc /dev/sda
 else
     echo "GRUB for EFI"
-    grub-instal --target=x86_64-efi --efi-directory=/efi --bootloarder-id=GRUB
+    grub-install --target=x86_64-efi --efi-directory=/efi --bootloarder-id=GRUB
 fi
 grub-mkconfig -o /boot/grub/grub.cfg
