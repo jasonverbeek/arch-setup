@@ -44,6 +44,6 @@ echo Generating fstab
 genfstab -U /mnt >> /mnt/etc/fstab
 
 echo Starting system install in chroot
-cp post-pacstrap.sh /mnt/root/
-arch-chroot /mnt bash post-pacstrap.sh
+cp post-pacstrap.sh /mnt/
+arch-chroot /mnt bash ost-pacstrap.sh IS_UEFI
 echo Done

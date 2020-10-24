@@ -2,6 +2,8 @@
 
 set -e
 
+IS_UEFI=$1
+
 echo Setting localtime
 ln -sf /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime
 
@@ -23,7 +25,16 @@ echo -e "127.0.1.1\tarch.localdomain arch" >> /etc/hosts
 
 echo
 echo
+echo "Setting password for root"
 passwd
 
 
-echo TODO: BOOTLOADER
+echo "Installing GRUB bootloader"
+if [ "${IS_UEFI}" -eq "2" ]; then
+    echo "GRUB for i386-pc"
+    grub-install --target=i386-pc /dev/sda
+else
+    echo "GRUB for EFI"
+    grub-instal --target=x86_64-efi --efi-directory=/efi --bootloarder-id=GRUB
+fi
+grub-mkconfig -o /boot/grub/grub.cfg
