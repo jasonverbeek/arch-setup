@@ -45,9 +45,11 @@ yes '' | pacstrap /mnt base base-devel linux linux-firmware \
     efibootmgr \
     sudo \
     xorg-server \
+    qtile \
     lightdm \
     lightdm-gtk-greeter \
-    dhcpcd
+    dhcpcd \
+    alacritty
 
 echo Generating fstab
 genfstab -U /mnt >> /mnt/etc/fstab

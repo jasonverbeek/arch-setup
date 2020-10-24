@@ -18,7 +18,7 @@ echo LANG=en_US.UTF-8 > /etc/locale.conf
 echo Setting hostname
 hostnamectl set-hostname arch
 
-echo -e "127.0.0.1\tlocalhosti\r\n" > /etc/hosts
+echo -e "127.0.0.1\tlocalhost\r\n" > /etc/hosts
 echo -e "::1\tlocalhost\r\n" >> /etc/hosts
 echo -e "127.0.1.1\tarch.localdomain arch" >> /etc/hosts
 
@@ -59,8 +59,8 @@ rm -rf /home/jason/yay
 
 yes '1' | sudo -u jason yay --noconfirm vi-vim-symlink
 
-sudo -u jason mkdir -p ~/.config/qtile
-sudo -u jason cp /usr/share/doc/qtile/default_config.py ~/.config/qtile/config.py
+sudo -u jason mkdir -p /home/jason/.config/qtile
+sudo -u jason cp /usr/share/doc/qtile/default_config.py /home/jason/.config/qtile/config.py
 
 chown jason:jason ~/.config/qtile/config.py
 
