@@ -60,8 +60,15 @@ yes '1' | sudo -u jason yay --noconfirm vi-vim-symlink
 
 sudo -u jason mkdir -p /home/jason/.config/qtile
 sudo -u jason cp /usr/share/arch-setup/qtile/config.py /home/jason/.config/qtile/config.py
+sudo -u jason cp /usr/share/arch-setup/qtile/autostart.sh /home/jason/.config/qtile/autostart.sh
 
-chown jason:jason /home/jason/.config/qtile/config.py
+chown jason:jason /home/jason/.config/qtile/*
+chmod +x /home/jason/.config/qtile/autostart.sh
 systemctl enable lightdm
 systemctl enable sshd
+
+
+
+
+nitrogen --set-zoom-fill /usr/share/backgrounds/archlinux/lone.jpg
 

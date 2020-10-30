@@ -25,6 +25,8 @@
 # SOFTWARE.
 
 from typing import List  # noqa: F401
+from subprocess import call
+from os.path import expanduser
 
 from libqtile import bar, layout, widget
 from libqtile.config import Click, Drag, Group, Key, Screen
@@ -183,3 +185,9 @@ focus_on_window_activation = "smart"
 # We choose LG3D to maximize irony: it is a 3D non-reparenting WM written in
 # java that happens to be on java's whitelist.
 wmname = "LG3D"
+
+
+@hook.subscribe.startup_once
+def startup_once():
+   call(expanduser('~/.config/qtile/autostart.sh')
+
