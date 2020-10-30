@@ -9,8 +9,8 @@ set -e
 echo Setting NTP
 timedatectl set-ntp true
 
-read -p "Where to install (/dev/sdX)? WARNING: destroys data on device" storage_dev
-if [ -f "${storage_dev}"]; do
+read -p "Where to install (/dev/sdX)?\t\tWARNING: destroys data on device\r\n" storage_dev
+if [ -f "${storage_dev}"]; then
     echo Destroying ${storage_dev}
     wipefs -a ${storage_dev}
     if [ "${IS_UEFI}" -eq "2" ]; then
@@ -42,7 +42,7 @@ if [ -f "${storage_dev}"]; do
 else
     echo "Error: ${storage_dev} doesn't exist"
     exit 1
-done
+fi
 
 echo Pacstrapping system
 reflector --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
