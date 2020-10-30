@@ -53,6 +53,7 @@ yes '' | pacstrap /mnt base base-devel linux linux-firmware \
     lightdm \
     lightdm-gtk-greeter \
     dhcpcd \
+    ansible \
     alacritty \
     rofi \
     openssh \
