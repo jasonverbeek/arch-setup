@@ -78,7 +78,7 @@ echo Setting HW Clock
 in_chroot hwclock --systohc
 
 echo Generating Locale
-in_chroot sed -i "s/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g" /etc/locale.gen
+sed -i "s/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g" /mnt/etc/locale.gen
 in_chroot locale-gen
 echo LANG=en_US.UTF-8 > /mnt/etc/locale.conf
 
@@ -140,15 +140,6 @@ select ynvb in "Yes" "No"; do
 done
 
 
-
-
-#TODO: use in_chroot function above to remove in_chroot_script, this allows a curl | bash command to install without git
-# use localhost8080.org dns to redirect to github raw
-#cp in-chroot-script /mnt/
-#arch-chroot /mnt bash in-chroot-script "${IS_UEFI}"
-#rm /mnt/in-chroot-script
-
-
 clear
 echo Install succesfull
 if [ "${IS_UEFI}" -eq "2" ]; then
@@ -159,3 +150,4 @@ else
     echo "Booting into installed EFI system..."
     sleep 4 && reboot now
 fi
+
