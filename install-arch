@@ -11,7 +11,7 @@ timedatectl set-ntp true
 
 echo "WARNING: this step will distroy any data on the device"
 read -p "Where to install (/dev/sdX)?: " storage_dev
-if [ -z "${storage_dev}" ]; then
+if [ ! -z "${storage_dev}" ]; then
     echo Destroying ${storage_dev}
     wipefs -a ${storage_dev}
     if [ "${IS_UEFI}" -eq "2" ]; then
@@ -71,6 +71,9 @@ genfstab -U /mnt >> /mnt/etc/fstab
 function in_chroot {
     arch-chroot /mnt $@
 }
+
+
+in_chroot ln -sf /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime
 
 #TODO: use in_chroot function above to remove in_chroot_script, this allows a curl | bash command to install without git
 # use localhost8080.org dns to redirect to github raw

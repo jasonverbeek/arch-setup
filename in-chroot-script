@@ -4,8 +4,11 @@ set -e
 
 IS_UEFI=$1
 
-echo Setting localtime
-ln -sf /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime
+#echo Setting localtime
+#ln -sf /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime
+clear
+ls -als /etc/localtime
+sleep 1m
 
 echo Seting hwclock
 hwclock --systohc
@@ -47,7 +50,7 @@ systemctl enable sshd
 function enableDHCP {
     clear
     ip a
-    read -p "Which interface do you want to use?" interface
+    read -p "Which interface do you want to use?: " interface
     if [ ! -z "${interface}" ]; then
         echo "Enabling DHCPCD for ${interface}"
         systemctl enable dhcpcd@$interface
