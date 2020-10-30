@@ -11,7 +11,7 @@ timedatectl set-ntp true
 
 echo "WARNING: this step will distroy any data on the device"
 read -p "Where to install (/dev/sdX)?: " storage_dev
-if [ -f "${storage_dev}"]; then
+if [ -f "${storage_dev}" ]; then
     echo Destroying ${storage_dev}
     wipefs -a ${storage_dev}
     if [ "${IS_UEFI}" -eq "2" ]; then
