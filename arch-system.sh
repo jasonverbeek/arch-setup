@@ -49,12 +49,21 @@ yes '' | pacstrap /mnt base base-devel linux linux-firmware \
     lightdm \
     lightdm-gtk-greeter \
     dhcpcd \
-    alacritty
+    alacritty \
+    rofi \
+    openssh
 
 echo Generating fstab
 genfstab -U /mnt >> /mnt/etc/fstab
 
+
+
+echo Copying data..
+cp -r root-fs/* /mnt/
+
 echo Starting system install in chroot
 cp post-pacstrap.sh /mnt/
+
 arch-chroot /mnt bash post-pacstrap.sh "${IS_UEFI}"
+shutdown now
 echo Done
