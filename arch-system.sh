@@ -20,9 +20,9 @@ if [ "${IS_UEFI}" -eq "2" ]; then
     echo Creating root partition
     parted -s /dev/sda mkpart primary ext4 200Mib 100% 1> /dev/null
     #parted -s /dev/sda set 1 boot on 1> /dev/null
-    mkfs.ext4 /dev/sda1 1> /dev/null
+    mkfs.ext4 /dev/sda2 1> /dev/null
     echo Mounting root partition
-    mount /dev/sda1 /mnt
+    mount /dev/sda2 /mnt
 else
     echo Setting up for EFI
     echo Creating EFI partition
