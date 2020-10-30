@@ -1,13 +1,14 @@
 #!/bin/bash
 
+echo Checking EFI
+ls /sys/firmware/efi/efivars &>/dev/null
+IS_UEFI=$?
 set -e
+
 
 echo Setting NTP
 timedatectl set-ntp true
 
-echo Checking EFI
-ls /sys/firmware/efi/efivars &>/dev/null
-IS_UEFI=$?
 
 echo Destroying /dev/sda
 wipefs -a /dev/sda
