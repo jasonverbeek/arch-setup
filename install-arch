@@ -9,10 +9,9 @@ set -e
 echo Setting NTP
 timedatectl set-ntp true
 
-echo "Where to install (/dev/sdX)? WARNING: destroys data on device"
-ls /dev/
-select storage_dev in "$(ls /dev/)"; do
-    echo Destroying /dev/sda
+read -p "Where to install (/dev/sdX)? WARNING: destroys data on device" storage_dev
+if [ -f "${storage_dev}"]; do
+    echo Destroying ${storage_dev}
     wipefs -a ${storage_dev}
     if [ "${IS_UEFI}" -eq "2" ]; then
         echo Setting up for i386
@@ -24,7 +23,7 @@ select storage_dev in "$(ls /dev/)"; do
         #parted -s /dev/sda set 1 boot on 1> /dev/null
         mkfs.ext4 ${storage_dev}2 1> /dev/null
         echo Mounting root partition
-        mount /dev/sda2 /mnt
+        mount ${storage_dev}2 /mnt
     else
         echo Setting up for EFI
         echo Creating EFI partition
@@ -40,7 +39,9 @@ select storage_dev in "$(ls /dev/)"; do
         mkdir /mnt/efi
         mount ${storage_dev}1 /mnt/efi
     fi
-
+else
+    echo "Error: ${storage_dev} doesn't exist"
+    exit 1
 done
 
 echo Pacstrapping system
@@ -66,7 +67,12 @@ yes '' | pacstrap /mnt base base-devel linux linux-firmware \
 echo Generating fstab
 genfstab -U /mnt >> /mnt/etc/fstab
 
+function in_chroot {
+    arch-chroot /mnt $@
+}
 
+#TODO: use in_chroot function above to remove in_chroot_script, this allows a curl | bash command to install without git
+# use localhost8080.org dns to redirect to github raw
 cp in-chroot-script /mnt/
 arch-chroot /mnt bash in-chroot-script "${IS_UEFI}"
 rm /mnt/in-chroot-script

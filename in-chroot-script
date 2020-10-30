@@ -49,7 +49,7 @@ function enableDHCP {
     ip a
     read -p "Which interface do you want to use?" interface
     if [ ! -z "${interface}" ]; then
-        echo Enabling DHCPCD
+        echo "Enabling DHCPCD for ${interface}"
         systemctl enable dhcpcd@$interface
     fi
 }
@@ -58,7 +58,7 @@ function enableDHCP {
 echo "Do you want to enable DHCP?"
 select yndhcp in "Yes" "No"; do
     case $yndhcp in
-        Yes ) enalbeDHCP;;
+        Yes ) enableDHCP; break;;
         No ) break;;
     esac
 done
@@ -67,7 +67,7 @@ done
 echo "Are you installing on a VirtualBox VM?"
 select ynvb in "Yes" "No"; do
     case $ynvb in
-        Yes ) pacman -S --noconfirm virtualbox-guest-utils;;
+        Yes ) pacman -S --noconfirm virtualbox-guest-utils; break;;
         No ) break;;
     esac
 done
