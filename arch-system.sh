@@ -51,7 +51,9 @@ yes '' | pacstrap /mnt base base-devel linux linux-firmware \
     dhcpcd \
     alacritty \
     rofi \
-    openssh
+    openssh \
+    archlinux-wallpaper \
+    nitrogen
 
 echo Generating fstab
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -65,5 +67,15 @@ echo Starting system install in chroot
 cp post-pacstrap.sh /mnt/
 
 arch-chroot /mnt bash post-pacstrap.sh "${IS_UEFI}"
-shutdown now
-echo Done
+
+
+clear
+echo Install succesfull
+if [ "${IS_UEFI}" -eq "2" ]; then
+    echo Shutting down setup
+    echo For i386 dont forget the remove the install media before booting
+    sleep 4 && shutdown now
+else
+    echo "Booting into installed EFI system..."
+    sleep 4 && reboot now
+fi
