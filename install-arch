@@ -74,12 +74,78 @@ function in_chroot {
 
 
 in_chroot ln -sf /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime
+in_chroot hwclock --systohc
+in_chroot 
+
+in_chroot sed -i "s/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g" /etc/locale.gen
+in_chroot locale-gen
+echo LANG=en_US.UTF-8 > /mnt/etc/locale.conf
+
+echo Setting hostname
+read -p "Pick a hostname: " hostname
+
+if [ ! -z "${hostname}" ]; then
+    echo $hostname > /mnt/etc/hostname
+    echo -e "127.0.0.1\tlocalhost" > /mnt/etc/hosts
+    echo -e "::1\t\tlocalhost" >> /mnt/etc/hosts
+    echo -e "127.0.1.1\t${hostname}.localdomain ${hostname}" >> /mnt/etc/hosts
+fi
+
+
+echo "Installing GRUB bootloader"
+if [ "${IS_UEFI}" -eq "2" ]; then
+    echo "GRUB for i386-pc"
+    in_chroot grub-install --target=i386-pc /dev/sda
+else
+    echo "GRUB for EFI"
+    in_chroot grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
+fi
+in_chroot grub-mkconfig -o /boot/grub/grub.cfg
+
+
+clear
+echo Choose root password
+in_chroot passwd
+
+in_chroot systemctl enable lightdm
+in_chroot systemctl enable sshd
+
+function enableDHCP {
+    clear
+    in_chroot ip a
+    read -p "Which interface do you want to use?: " interface
+    if [ ! -z "${interface}" ]; then
+        echo "Enabling DHCPCD for ${interface}"
+        in_chroot systemctl enable dhcpcd@$interface
+    fi
+}
+
+
+echo "Do you want to enable DHCP?"
+select yndhcp in "Yes" "No"; do
+    case $yndhcp in
+        Yes ) enableDHCP; break;;
+        No ) break;;
+    esac
+done
+
+
+echo "Are you installing on a VirtualBox VM?"
+select ynvb in "Yes" "No"; do
+    case $ynvb in
+        Yes ) in_chroot pacman -S --noconfirm virtualbox-guest-utils; break;;
+        No ) break;;
+    esac
+done
+
+
+
 
 #TODO: use in_chroot function above to remove in_chroot_script, this allows a curl | bash command to install without git
 # use localhost8080.org dns to redirect to github raw
-cp in-chroot-script /mnt/
-arch-chroot /mnt bash in-chroot-script "${IS_UEFI}"
-rm /mnt/in-chroot-script
+#cp in-chroot-script /mnt/
+#arch-chroot /mnt bash in-chroot-script "${IS_UEFI}"
+#rm /mnt/in-chroot-script
 
 
 clear
