@@ -189,5 +189,5 @@ wmname = "LG3D"
 
 @hook.subscribe.startup_once
 def startup_once():
-   call(expanduser('~/.config/qtile/autostart.sh')
+   call(['bash', expanduser('~/.config/qtile/autostart.sh'])
 
