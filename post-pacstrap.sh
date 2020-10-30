@@ -68,7 +68,3 @@ systemctl enable lightdm
 systemctl enable sshd
 
 
-
-
-nitrogen --set-zoom-fill /usr/share/backgrounds/archlinux/lone.jpg
-
