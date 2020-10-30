@@ -9,7 +9,8 @@ set -e
 echo Setting NTP
 timedatectl set-ntp true
 
-read -p "Where to install (/dev/sdX)?\t\tWARNING: destroys data on device\r\n" storage_dev
+echo "WARNING: this step will distroy any data on the device"
+read -p "Where to install (/dev/sdX)?: " storage_dev
 if [ -f "${storage_dev}"]; then
     echo Destroying ${storage_dev}
     wipefs -a ${storage_dev}
