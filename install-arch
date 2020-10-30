@@ -1,0 +1,84 @@
+#!/bin/bash
+
+echo Checking EFI
+ls /sys/firmware/efi/efivars &>/dev/null
+IS_UEFI=$?
+set -e
+
+
+echo Setting NTP
+timedatectl set-ntp true
+
+echo "Where to install (/dev/sdX)? WARNING: destroys data on device"
+ls /dev/
+select storage_dev in "$(ls /dev/)"; do
+    echo Destroying /dev/sda
+    wipefs -a ${storage_dev}
+    if [ "${IS_UEFI}" -eq "2" ]; then
+        echo Setting up for i386
+        echo Creating BIOS BOOT partition
+        parted -s ${storage_dev} mklabel gpt mkpart primary ext2 0% 200Mib 1> /dev/null
+        parted -s ${storage_dev} set 1 bios_grub on 1> /dev/null
+        echo Creating root partition
+        parted -s ${storage_dev} mkpart primary ext4 200Mib 100% 1> /dev/null
+        #parted -s /dev/sda set 1 boot on 1> /dev/null
+        mkfs.ext4 ${storage_dev}2 1> /dev/null
+        echo Mounting root partition
+        mount /dev/sda2 /mnt
+    else
+        echo Setting up for EFI
+        echo Creating EFI partition
+        parted -s ${storage_dev} mklabel gpt mkpart primary fat32 1Mib 261Mib 1> /dev/null
+        parted -s ${storage_dev} set 1 esp on 1> /dev/null
+        mkfs.fat -F32 ${storage_dev}1 1> /dev/null
+        echo Creating root partition
+        parted -s ${storage_dev} mkpart extended ext4 261Mib 100% 1> /dev/null
+        mkfs.ext4 ${storage_dev}2 1> /dev/null
+        echo Mounting root partition
+        mount ${storage_dev}2 /mnt
+        echo Mounting EFI partition
+        mkdir /mnt/efi
+        mount ${storage_dev}1 /mnt/efi
+    fi
+
+done
+
+echo Pacstrapping system
+reflector --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
+yes '' | pacstrap /mnt base base-devel linux linux-firmware \
+    grub \
+    git \
+    vim \
+    efibootmgr \
+    sudo \
+    xorg-server \
+    qtile \
+    lightdm \
+    lightdm-gtk-greeter \
+    dhcpcd \
+    ansible \
+    alacritty \
+    openssh 
+    #rofi \
+    #archlinux-wallpaper \
+    # nitrogen
+
+echo Generating fstab
+genfstab -U /mnt >> /mnt/etc/fstab
+
+
+cp in-chroot-script /mnt/
+arch-chroot /mnt bash in-chroot-script "${IS_UEFI}"
+rm /mnt/in-chroot-script
+
+
+clear
+echo Install succesfull
+if [ "${IS_UEFI}" -eq "2" ]; then
+    echo Shutting down setup
+    echo For i386 dont forget the remove the install media before booting
+    sleep 4 && shutdown now
+else
+    echo "Booting into installed EFI system..."
+    sleep 4 && reboot now
+fi

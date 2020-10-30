@@ -1,0 +1,76 @@
+#!/bin/bash
+
+set -e
+
+IS_UEFI=$1
+
+echo Setting localtime
+ln -sf /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime
+
+echo Seting hwclock
+hwclock --systohc
+
+echo Setting locale
+sed -i "s/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g" /etc/locale.gen
+locale-gen
+echo LANG=en_US.UTF-8 > /etc/locale.conf
+
+echo Setting hostname
+read -p "Pick a hostname: " hostname
+
+if [ ! -z "${hostname}" ]; then
+    echo $hostname > /etc/hostname
+    echo -e "127.0.0.1\tlocalhost" > /etc/hosts
+    echo -e "::1\t\tlocalhost" >> /etc/hosts
+    echo -e "127.0.1.1\t${hostname}.localdomain ${hostname}" >> /etc/hosts
+fi
+
+
+echo "Installing GRUB bootloader"
+if [ "${IS_UEFI}" -eq "2" ]; then
+    echo "GRUB for i386-pc"
+    grub-install --target=i386-pc /dev/sda
+else
+    echo "GRUB for EFI"
+    grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
+fi
+grub-mkconfig -o /boot/grub/grub.cfg
+
+
+clear
+echo Choose root password
+passwd
+
+systemctl enable lightdm
+systemctl enable sshd
+
+function enableDHCP {
+    clear
+    ip a
+    read -p "Which interface do you want to use?" interface
+    if [ ! -z "${interface}" ]; then
+        echo Enabling DHCPCD
+        systemctl enable dhcpcd@$interface
+    fi
+}
+
+
+echo "Do you want to enable DHCP?"
+select yndhcp in "Yes" "No"; do
+    case $yndhcp in
+        Yes ) enalbeDHCP;;
+        No ) break;;
+    esac
+done
+
+
+echo "Are you installing on a VirtualBox VM?"
+select ynvb in "Yes" "No"; do
+    case $ynvb in
+        Yes ) pacman -S --noconfirm virtualbox-guest-utils;;
+        No ) break;;
+    esac
+done
+
+
+
