@@ -72,11 +72,12 @@ function in_chroot {
     arch-chroot /mnt $@
 }
 
-
+echo Setting Timezone
 in_chroot ln -sf /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime
+echo Setting HW Clock
 in_chroot hwclock --systohc
-in_chroot 
 
+echo Generating Locale
 in_chroot sed -i "s/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g" /etc/locale.gen
 in_chroot locale-gen
 echo LANG=en_US.UTF-8 > /mnt/etc/locale.conf
