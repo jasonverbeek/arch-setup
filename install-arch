@@ -108,6 +108,15 @@ clear
 echo Choose root password
 in_chroot passwd
 
+clear
+while [ -z "${username}" ]; do
+    read -p "Choose username for new user: " username
+done
+useradd -m "${username}"
+echo Choose password for ${username}
+in_chroot passwd ${username}
+echo -e "\r\n${username} ALL=(ALL) ALL" >> /mnt/etc/sudoers
+
 in_chroot systemctl enable lightdm
 in_chroot systemctl enable sshd
 
