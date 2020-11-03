@@ -8,7 +8,7 @@ set -e
 
 echo Setting NTP
 timedatectl set-ntp true
-
+clear
 echo "WARNING: this step will distroy any data on the device"
 read -p "Where to install (/dev/sdX)?: " storage_dev
 if [ ! -z "${storage_dev}" ]; then
@@ -21,7 +21,6 @@ if [ ! -z "${storage_dev}" ]; then
         parted -s ${storage_dev} set 1 bios_grub on 1> /dev/null
         echo Creating root partition
         parted -s ${storage_dev} mkpart primary ext4 200Mib 100% 1> /dev/null
-        #parted -s /dev/sda set 1 boot on 1> /dev/null
         mkfs.ext4 ${storage_dev}2 1> /dev/null
         echo Mounting root partition
         mount ${storage_dev}2 /mnt
@@ -54,16 +53,13 @@ yes '' | pacstrap /mnt base base-devel linux linux-firmware \
     efibootmgr \
     sudo \
     xorg-server \
-    qtile \
+    qtile \ #TODO: optional/configurable, however some ansible steps require graphical mode
     lightdm \
     lightdm-gtk-greeter \
     dhcpcd \
     ansible \
     alacritty \
     openssh 
-    #rofi \
-    #archlinux-wallpaper \
-    # nitrogen
 
 echo Generating fstab
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -112,10 +108,10 @@ clear
 while [ -z "${username}" ]; do
     read -p "Choose username for new user: " username
 done
-useradd -m "${username}"
+in_chroot useradd -m "${username}"
 echo Choose password for ${username}
 in_chroot passwd ${username}
-echo -e "\r\n${username} ALL=(ALL) ALL" >> /mnt/etc/sudoers
+echo -e "\r\n${username} ALL=(ALL) NOPASSWD: ALL" >> /mnt/etc/sudoers
 
 in_chroot systemctl enable lightdm
 in_chroot systemctl enable sshd
