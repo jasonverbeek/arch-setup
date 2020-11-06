@@ -139,7 +139,7 @@ done
 echo "Are you installing on a VirtualBox VM?"
 select ynvb in "Yes" "No"; do
     case $ynvb in
-        Yes ) in_chroot pacman -S --noconfirm virtualbox-guest-utils; break;;
+        Yes ) in_chroot pacman -S --noconfirm virtualbox-guest-utils virtualbox-guest-dkms; break;;
         No ) break;;
     esac
 done
