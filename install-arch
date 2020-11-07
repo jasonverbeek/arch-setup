@@ -46,6 +46,7 @@ fi
 
 echo Pacstrapping system
 reflector --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
+#TODO: QTile optional/configurable, however some ansible steps require graphical mode
 yes '' | pacstrap /mnt base base-devel linux linux-firmware \
     grub \
     git \
@@ -53,7 +54,7 @@ yes '' | pacstrap /mnt base base-devel linux linux-firmware \
     efibootmgr \
     sudo \
     xorg-server \
-    qtile \ #TODO: optional/configurable, however some ansible steps require graphical mode
+    qtile \
     lightdm \
     lightdm-gtk-greeter \
     dhcpcd \
