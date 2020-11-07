@@ -92,7 +92,7 @@ fi
 echo "Installing GRUB bootloader"
 if [ "${IS_UEFI}" -eq "2" ]; then
     echo "GRUB for i386-pc"
-    in_chroot grub-install --target=i386-pc /dev/sda
+    in_chroot grub-install --target=i386-pc ${storage_dev}
 else
     echo "GRUB for EFI"
     in_chroot grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
